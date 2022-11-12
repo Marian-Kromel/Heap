@@ -1,0 +1,133 @@
+// Heap10000000000.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <cstdlib> //Random Numbers 
+#include <ctime> //Time
+#include "Heap.h"
+using namespace std;
+
+int Capacity = 10000000; //Maximum Possible Size that array can contain..
+
+int main()
+{
+    Heap h; 
+    int Size, c = 0; //Continue or NOT?
+    char again = 0; //Show Menu Again?
+    do {
+        cout << "Enter Size of Your Heap:" << endl;
+        bool  condition = true;
+        while (condition == true)
+        {
+            cin >> Size;  //Get Heap Size
+            if (Size > 0)  //If Size Is (-ve)
+                condition = false;
+            else
+                cout << "Size Of Your Heap [Invalid], Re-Enter Positive Size Please!" << endl;
+        }  
+
+        int Tsize = Size; 
+        srand(time(0)); //Help Generating Numbers
+
+        int* H = new int[Capacity]; //Dynamic array 
+
+        string Input;
+        cout << "Random Numbers Press [R], Given numbers Press [G]" << endl;
+        cin >> Input;
+
+        //Your Own Numbers?
+        if (Input == "G" || Input == "g")  //Capital/Small letter are allowed
+        {  
+            cout << "Enter Your Own Heap Numbers:" << endl;
+            for (int i = 0; i < Size; i++)
+            {
+                cin >> H[i];
+            }
+        } 
+
+        //Wanna Random Numbers?
+        else 
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                H[i] = (rand() % 50) + 1;   //Range From [1 --> 50]
+            }
+        }
+
+        system("cls");  //Clean Console
+
+        do { //Menu...
+            cout << "\t\t---------------------------------------------------------------" << endl;
+            cout << "\t\t\t\t Operations on Heap...         " << endl;
+            cout << "\t\t---------------------------------------------------------------" << endl;
+            cout << "\t\t\t\t1. Show [Given] Values.        " << endl;  //To know the Random Numbers
+            cout << "\t\t\t\t2. Show [Max Heap] Sorting.    " << endl;
+            cout << "\t\t\t\t3. Show Max Heap [Tree] Print. " << endl;
+            cout << "\t\t\t\t4. Find [Heapify] of Max Heap. " << endl;
+            cout << "\t\t\t\t5. Heapify by [Tree] Print.    " << endl;
+            cout << "\t\t\t\t6. Maximum [Priority].         " << endl;
+            cout << "\t\t\t\t7. Exit.                       " << endl;
+            cout << "\t\t---------------------------------------------------------------" << endl;
+
+            int choice;
+            cout << "Enter Your Choice: ";
+            cin >> choice;
+
+            switch (choice)
+            {
+            case 1:  //Show Given Numbers.
+                cout << "Your Heap Numbers Before Sorting:" << " ";
+                for (int i = 0; i < Size; i++) 
+                {
+                    cout << H[i] << " ";
+                }
+                break;
+            case 2: //Print Max Heap.
+                h.build_maxheap(H, Size);
+                cout << "\n Max Heap: \n";
+                for (int i = 0; i < Size; i++)
+                    cout << H[i] <<" ";
+                break;
+            case 3: //Print Max Heap by Tree.
+                h.build_maxheap(H, Size);
+                cout << "\n Max Heap: \n";
+                h.Display(H, Size);
+                break;
+            case 4: //Heapify 
+                cout << " \n Heapify Sorting --> " << " ";
+                h.HeapSort(H, Size);
+                h.PrintArray(H, Size);
+                break;
+            case 5: //Heapify by Tree
+                cout << " \n Tree Of Heapify Sorting --> " << " ";
+                h.HeapSort(H, Size);
+                h.PrintArray(H, Size);
+                cout << "\n";
+                h.Display(H, Size);
+                break;
+            case 6:  //Max Node Priority.
+                int Tsize = Size;
+                for (int i = 0; i < Size; i++)
+                {
+                    h.build_maxheap(H, Size);
+                    cout << "\n Node with Maximum Priority : " << h.ExtractMax(H, Size) << "\n"; //akbar node
+                    h.Display(H, Tsize--);
+                }
+                break;
+            }
+            cout << "\n If You Want to Choose Another Option Press [A], Stands for [Again]" << endl;
+            cout << "Press [0], or any other key to [finish]!" << endl;
+            cin >> again;
+
+            system("cls");
+        } while (again == 'a' || again == 'A');
+        cout << "\n To Repeat [Press 1], To Exit [Press 0], or any other key! " << " " << endl;
+        cin >> c;
+
+        system("cls");  //Clean Console
+    } while (c == 1);
+    cout << "\n";
+    system("cls");
+    cout << "\n\n \t\t\t\t***** Great Job!!, Thank you. :) *****" << endl;
+}
+                                   //  Thank You  //

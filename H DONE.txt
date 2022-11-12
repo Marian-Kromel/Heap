@@ -1,0 +1,28 @@
+#pragma once
+class Heap
+{
+private: 
+	int size;
+	int* HPtr;
+public: 
+	Heap();   //Default constructor 
+	Heap(int Size);    //Parameterize constructor 
+	bool Empty() const;  
+	int Parent(int i);
+	int LeftChild(int i);
+	int RightChild(int i);
+	int GetMax();
+	void Insert(int Value);
+	void Remove(int i);
+	int ExtractMax(int HPtr[], int size);
+	void ShiftDown(int i);
+	void ShiftUp(int i);
+	void max_heap(int* HPtr, int m, int size);
+	void build_maxheap(int* HPtr, int size);
+	void HeapSort(int HPtr[], int size);
+	void Heapify(int HPtr[], int size, int i);
+	void PrintArray(int HPtr[], int size);
+	void Display(int HPtr[], int size);
+	void displayOneLevel(int HPtr[], int numRows, int level, int beginIndex, int endIndex);
+};
+

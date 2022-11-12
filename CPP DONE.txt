@@ -1,0 +1,208 @@
+#include "Heap.h"
+#include <iostream>
+#include <iomanip> //Function for setw (Display Tree)
+using namespace std;
+
+Heap::Heap():size(0)  //Defult constructor 
+{}
+
+Heap::Heap(int Size)  //Parametrize constructor 
+{
+    Size = size;
+    HPtr = new int[size];
+}
+
+//Check If array's Empty!
+bool Heap::Empty() const 
+{
+    return size == 0; //Zai Condition b True!
+}
+
+//Return The Index Of The Parent
+int Heap::Parent(int i)        //   (P)
+{                             //   /   \ 
+    return (i - 1) / 2;      //   L     R
+}
+
+//Return The Index Of The Left Child
+int Heap::LeftChild(int i)     //    P
+{                             //   /   \ 
+    return ((2 * i) + 1);    //  (L)    R
+}
+
+//Return The Index Of The Right Child
+int Heap::RightChild(int i)    //   P
+{                             //  /   \ 
+    return ((2 * i) + 2);    //  L    (R)
+}
+
+int Heap::GetMax()
+{
+    return HPtr[0];  //Value Of Maximum Element.
+}
+
+//When I Need To Insert A New Element.
+void Heap::Insert(int Value)
+{
+    HPtr[size] = Value;
+
+    ShiftUp(size);   //Shift Up to maintain heap property
+    size++;
+}
+
+void Heap::Remove(int i)
+{
+    //Remove located element at given index.
+    HPtr[i] = GetMax() + 1;
+    ShiftUp(i);
+
+    ExtractMax(HPtr,size);
+}
+
+int Heap::ExtractMax(int HPtr[], int size)
+{
+    int result = HPtr[0];
+
+    //Replace value at the root with the last leaf.
+    HPtr[0] = HPtr[size];
+    size = size - 1;
+
+    ShiftDown(0);
+    return result;
+}
+
+//Shift Up Nodes In Order To Maintain heap Sorting
+void Heap::ShiftUp(int i)
+{
+    while (i > 0 && HPtr[Parent(i)] < HPtr[i])
+    {
+        swap(HPtr[Parent(i)],HPtr[i]);  // Swap Parent with current node 
+        i = Parent(i);  //Update i to be a Parent
+    }
+}
+
+void Heap::ShiftDown(int i)
+{
+    int MaxIndex = i;
+
+    int L = LeftChild(i);  
+    if (L <= size && HPtr[L] > HPtr[MaxIndex])
+    {
+        MaxIndex = L;   //Swap L with Parent
+    }
+
+    int R = RightChild(i);
+    if (R <= size && HPtr[R] > HPtr[MaxIndex])
+    {
+        MaxIndex = R; //Swap R with Parent
+    }
+
+    if (i != MaxIndex)  //If i != max
+    {
+        swap(HPtr[i], HPtr[MaxIndex]);  //Swap node with Parent/MaxIndex
+        ShiftDown(MaxIndex);
+    }
+}
+
+void Heap::max_heap(int* HPtr, int i, int size)
+{
+    int j, temp;
+    temp = HPtr[i];
+    j = 2 * i;
+    while (j <= size)
+    {
+        if (j < size && HPtr[j + 1] > HPtr[j])
+            j++;
+        if (temp > HPtr[j])
+            break;
+        else if (temp <= HPtr[j])
+        {
+            HPtr[j / 2] = HPtr[j];
+            j = 2 * j;
+        }
+    }
+    HPtr[j / 2] = temp;
+    return;
+}
+
+void Heap::build_maxheap(int* HPtr, int size)
+{
+    for (int i = size / 2; i >= 0; i--)
+    {
+        max_heap(HPtr, i, size);
+    }
+}
+
+void Heap::Heapify(int HPtr[], int size, int i)
+{
+    int largest = i;         // Initialize largest as root
+    int l = LeftChild(i);   // left = 2*i + 1
+    int r = RightChild(i); // right = 2*i + 2
+
+    if (l < size && HPtr[l] > HPtr[largest])  //If left child is larger than root node. [Parent]
+        largest = l;
+
+    if (r < size && HPtr[r] > HPtr[largest])  //If right child is larger than root node. [Parent]
+        largest = r;
+
+    if (largest != i)   // If largest is not root
+    {        
+        swap(HPtr[i], HPtr[largest]);
+        // Recursively heapify... 
+        Heapify(HPtr, size, largest);
+    }
+}
+
+void Heap::HeapSort(int HPtr[], int size)
+{
+    //Build heap [re-arrange array From smaller to bigger numbers]
+    for (int i = size / 2 - 1; i >= 0; i--)
+        Heapify(HPtr, size, i);
+
+    //Extract an element from heap
+    for (int i = size - 1; i > 0; i--)
+    {
+        swap(HPtr[0], HPtr[i]); // Move current root to end
+        Heapify(HPtr, i, 0); // call max heapify on the reduced heap
+    }
+}
+
+void Heap::PrintArray(int HPtr[], int size)
+{
+    for (int i = 0; i < size; i++) //Print Array of size N.
+        cout << HPtr[i] << " ";
+      cout << "\n";
+}
+
+void Heap::Display(int HPtr[], int size)
+{
+    //Number of levels
+    int beginIndex = 0, endIndex = 0, rowLength, numLevels = int(ceil(log(int(size)) / log(2))); 
+    for (int level = 0; level < numLevels; level++) 
+    {
+        displayOneLevel(HPtr, numLevels, level, beginIndex, endIndex); //Calling Function 
+        rowLength = endIndex - beginIndex + 1;
+        beginIndex = endIndex + 1;
+        endIndex = min(endIndex + 2 * rowLength, size - 1);
+    }
+}
+
+//Print Array Elements In Tree Shape
+void Heap::displayOneLevel(int HPtr[], int numRows, int level, int beginIndex, int endIndex)
+{
+    int skip = int(pow(2, numRows - level) - 1);
+    for (int i = beginIndex; i <= endIndex; i++)
+    {
+        cout << setw(skip) << " ";
+        if (HPtr[i] < 0)   //Last Level? Print space [When Leaf Node]
+        {
+            cout << setw(2) << " ";
+        }
+        else              //NOT Last Level? Print Node Number
+        {
+            cout << setw(2) << HPtr[i];
+        }
+        cout << setw(skip) << " ";
+    }
+    cout << " \n\n ";
+}
